@@ -20,7 +20,7 @@ public class IndexController {
 
     @RequestMapping(value = "indexShow",method = RequestMethod.POST)
     /**
-    *@explain 分页显示问题
+    *@explain 分页显示
     *Author
     *@param indexDTO
      * page

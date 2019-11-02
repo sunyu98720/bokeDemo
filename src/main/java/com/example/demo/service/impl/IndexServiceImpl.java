@@ -108,8 +108,12 @@ public class IndexServiceImpl implements IndexService {
     @Transactional
     @Override
     public HttpResult delMsg(Integer id, String userid) {
-        indexMapper.delMsg(id);
-        indexMapper.delMsgComment(id, userid);
+        try {
+            indexMapper.delMsg(id);
+            indexMapper.delMsgComment(id,userid);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         return HttpResult.SUCCESS("success");
     }
 

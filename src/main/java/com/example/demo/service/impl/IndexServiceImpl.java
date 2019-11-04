@@ -65,9 +65,6 @@ public class IndexServiceImpl implements IndexService {
                               HttpServletRequest request) {
         Timestamp ts = new Timestamp(System.currentTimeMillis());
         StudentForm studentForm = (StudentForm) request.getSession().getAttribute("studentForm");
-        if(studentForm == null){
-            return HttpResult.error("-1", "用户名未登录");
-        }
         Publish publish = new Publish();
         publish.setContent(sendMsgDTO.getContent());
         publish.setTitle(sendMsgDTO.getTitle());
@@ -85,9 +82,6 @@ public class IndexServiceImpl implements IndexService {
 //    写评论
     public HttpResult msgComment(MsgCommentDTO msgCommentDTO,HttpServletRequest request) {
         StudentForm studentForm = (StudentForm) request.getSession().getAttribute("studentForm");
-        if(studentForm == null){
-            return HttpResult.error("-1", "用户名未登录");
-        }
         Timestamp ts = new Timestamp(System.currentTimeMillis());
         MsgComment msgComment = new MsgComment();
         msgComment.setComment(msgCommentDTO.getComment());

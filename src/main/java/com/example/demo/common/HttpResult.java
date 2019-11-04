@@ -52,7 +52,7 @@ public class HttpResult<T> implements Serializable {
      * 失败方法
      * @return
      */
-    public static HttpResult error(String code,String message){
+    public static HttpResult error(String code, String message){
         HttpResult result = new HttpResult();
         result.setCode(code);
         result.setMsg(message);

@@ -1,16 +1,21 @@
 package com.example.demo.service.impl;
 
+import ch.qos.logback.core.joran.util.beans.BeanUtil;
+import com.example.demo.DTO.IndexDTO;
 import com.example.demo.DTO.LoginDTO;
 import com.example.demo.common.HttpResult;
 import com.example.demo.mapper.StudentMapper;
+import com.example.demo.model.LoginLog;
 import com.example.demo.model.StudentForm;
 import com.example.demo.service.interfaces.LoginService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.sql.Timestamp;
 
 @Service
 public class LoginServiceImpl implements LoginService {
@@ -28,6 +33,18 @@ public class LoginServiceImpl implements LoginService {
         if(studentForm != null){
             if(studentForm.getAccount().equals(loginDTO.getAccount())  && studentForm.getPassword().equals(loginDTO.getPassword())){
                 request.getSession().setAttribute("studentForm",studentForm);
+//                登录日志
+                LoginLog loginLog = new LoginLog();
+                Timestamp ts = new Timestamp(System.currentTimeMillis());
+                System.out.println(studentForm.getId());
+                loginLog.setAccountId(studentForm.getId());
+                loginLog.setAccount(studentForm.getAccount());
+                loginLog.setPassword(studentForm.getPassword());
+                loginLog.setUserId(studentForm.getToken());
+                loginLog.setName(studentForm.getName());
+                loginLog.setAge(studentForm.getAge());
+                loginLog.setCreateTime(ts);
+                studentMapper.createLoginLog(loginLog);
                 return HttpResult.SUCCESS(studentForm);
             }else{
                 return HttpResult.SUCCESS("-1", "用户名密码不正确");

@@ -1,5 +1,6 @@
 package com.example.demo.mapper;
 
+import com.example.demo.model.LoginLog;
 import com.example.demo.model.StudentForm;
 import org.apache.ibatis.annotations.*;
 
@@ -17,4 +18,7 @@ public interface StudentMapper {
 
     @Update("update student_form set password = #{newPassword} where account = #{account}")
     void updateByPassword(@Param("newPassword") String newPassword,@Param("account") String account);
+
+    @Insert("INSERT INTO login_log (accountId,userId,account, password,name,age,createTime) VALUES (#{accountId},#{userId}, #{account}, #{password}, #{name}, #{age}, #{createTime})")
+    void createLoginLog(LoginLog loginLog);
 }

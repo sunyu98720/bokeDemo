@@ -1,18 +1,13 @@
 package com.example.demo.service.impl;
 
-import ch.qos.logback.core.joran.util.beans.BeanUtil;
-import com.example.demo.DTO.IndexDTO;
 import com.example.demo.DTO.LoginDTO;
 import com.example.demo.common.HttpResult;
 import com.example.demo.mapper.StudentMapper;
 import com.example.demo.model.LoginLog;
 import com.example.demo.model.StudentForm;
 import com.example.demo.service.interfaces.LoginService;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.sql.Timestamp;
@@ -36,7 +31,6 @@ public class LoginServiceImpl implements LoginService {
 //                登录日志
                 LoginLog loginLog = new LoginLog();
                 Timestamp ts = new Timestamp(System.currentTimeMillis());
-                System.out.println(studentForm.getId());
                 loginLog.setAccountId(studentForm.getId());
                 loginLog.setAccount(studentForm.getAccount());
                 loginLog.setPassword(studentForm.getPassword());

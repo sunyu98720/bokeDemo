@@ -18,7 +18,7 @@ public class IndexController {
     private IndexService indexService;
 
 
-    @RequestMapping(value = "indexShow",method = RequestMethod.POST)
+    @RequestMapping(value = "/indexShow",method = RequestMethod.POST)
     /**
     *@explain 分页显示
     *Author

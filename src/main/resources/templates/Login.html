@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>登录</title>
+    <script src="http://libs.baidu.com/jquery/1.9.1/jquery.js"></script>
+    <script type="text/javascript" src="https://unpkg.com/vue"></script>
+    <style>
+        #app{
+            width: 250px;
+            height: 100px;
+            margin: 0 auto;
+            margin-top: 200px;
+            text-align: center;
+        }
+        #btn_login{
+            text-align: center;
+            margin-top: 10px;
+            margin-left: 35px;
+            height: 30px;
+            width: 180px;
+            line-height: 30px;
+            border-radius:5px;
+            background-color: darkcyan;
+            color: white;
+            font-weight:600;
+        }
+
+    </style>
+</head>
+<body>
+<div id = "app">
+    <div>
+        <input class="account" type="text" name="account" placeholder="请输入用户名">
+    </div>
+    <div>
+       <input class="password"  type="password" name = "password"placeholder="请输入密码">
+    </div>
+    <div id="btn_login" type="button">登录</div>
+    <div v-if="data_after.code != 200" style="color: red">{{data_after.msg}}</div>
+</div>
+
+
+<script>
+    new Vue({
+        el:"#app",
+        data:{
+            name:"hello world",
+            url_data:"http://localhost:8086",
+            data_after:"",
+        },
+        methods:{
+            login:function () {
+                var that = this;
+                $("#btn_login").click(function () {
+                    var loginData = {
+                        "account":$(".account").val(),
+                        "password":$(".password").val()
+                    }
+                    $.ajax({
+                        url:that.url_data + "/login",
+                        type:"post",
+                        contentType : "application/json",
+                        data:JSON.stringify(loginData),
+                        datatype:"json",
+                        beforeSend:function () {
+                        },
+                        success:function (data) {
+                            that.data_after = data
+                        },
+                        error:function (data) {
+                        }
+                    })
+
+                })
+            }
+        },
+        mounted:function () {
+            this.login();
+        }
+    });
+
+</script>
+</body>
+</html>

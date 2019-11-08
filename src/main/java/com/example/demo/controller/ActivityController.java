@@ -1,8 +1,6 @@
 package com.example.demo.controller;
 
 import com.example.demo.common.HttpResult;
-import com.example.demo.common.TimeUtils;
-import com.example.demo.mapper.ActivityMapper;
 import com.example.demo.service.interfaces.ActivityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;

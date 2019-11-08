@@ -3,33 +3,31 @@ package com.example.demo.service.impl;
 import com.example.demo.DTO.*;
 import com.example.demo.common.HttpResult;
 import com.example.demo.mapper.IndexMapper;
-import com.example.demo.mapper.StudentMapper;
 import com.example.demo.model.MsgComment;
 import com.example.demo.model.Publish;
 import com.example.demo.model.StudentForm;
 import com.example.demo.service.interfaces.IndexService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.DefaultApplicationArguments;
-import org.springframework.boot.web.servlet.server.Session;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.DefaultTransactionDefinition;
-
 import javax.servlet.http.HttpServletRequest;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+
 
 @Service
 public class IndexServiceImpl implements IndexService {
     @Autowired
     private IndexMapper indexMapper;
 
-    @Autowired
-    private StudentMapper studentMapper;
+    private static final Logger logger = LoggerFactory.getLogger(IndexServiceImpl.class);
 
-//    页面分页展示
+
+    //    页面分页展示
     @Override
     public HttpResult indexShow(IndexDTO indexDTO) {
          Integer totalCount = indexMapper.count(indexDTO.getContent());
@@ -56,6 +54,9 @@ public class IndexServiceImpl implements IndexService {
             publishDTOS.add(publishDTO);
         }
         indexDTO.setPublishDTOS(publishDTOS);
+
+        logger.info("返回数据:" + indexDTO);
+
         return HttpResult.SUCCESS(indexDTO);
     }
 
@@ -63,6 +64,7 @@ public class IndexServiceImpl implements IndexService {
     @Override
     public HttpResult sendMsg(SendMsgDTO sendMsgDTO,
                               HttpServletRequest request) {
+        logger.info("入参:" + sendMsgDTO);
         Timestamp ts = new Timestamp(System.currentTimeMillis());
         StudentForm studentForm = (StudentForm) request.getSession().getAttribute("studentForm");
         Publish publish = new Publish();
@@ -74,6 +76,7 @@ public class IndexServiceImpl implements IndexService {
         publish.setUserid(studentForm.getToken());
         publish.setUpdataTime(ts);
         indexMapper.createPublish(publish);
+        logger.info("发送成功:" + publish);
         return HttpResult.SUCCESS("发送成功");
     }
 
@@ -81,6 +84,7 @@ public class IndexServiceImpl implements IndexService {
     @Override
 //    写评论
     public HttpResult msgComment(MsgCommentDTO msgCommentDTO,HttpServletRequest request) {
+        logger.info("评论内容:" + msgCommentDTO.getComment()  + "," + "评论PublishId:" + msgCommentDTO.getPublishId());
         StudentForm studentForm = (StudentForm) request.getSession().getAttribute("studentForm");
         Timestamp ts = new Timestamp(System.currentTimeMillis());
         MsgComment msgComment = new MsgComment();
@@ -90,7 +94,8 @@ public class IndexServiceImpl implements IndexService {
         msgComment.setName(studentForm.getName());
         msgComment.setUserId(studentForm.getToken());
         indexMapper.createComment(msgComment);
-        return HttpResult.SUCCESS("评论成功");
+        logger.info("评论成功:" + msgComment);
+        return HttpResult.SUCCESS("评论成功:" + msgComment);
     }
 
     @Override
@@ -105,8 +110,10 @@ public class IndexServiceImpl implements IndexService {
         try {
             indexMapper.delMsg(id);
             indexMapper.delMsgComment(id,userid);
+            logger.info("评论删除成功," + "评论id:" + id + ",userid:" + userid);
         }catch (Exception e){
             e.printStackTrace();
+            return HttpResult.SYSTEM_ERROR();
         }
         return HttpResult.SUCCESS("success");
     }

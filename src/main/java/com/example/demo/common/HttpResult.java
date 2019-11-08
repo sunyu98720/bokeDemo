@@ -19,6 +19,8 @@ public class HttpResult<T> implements Serializable {
      * @param <T>
      * @return
      */
+
+
     public static <T> HttpResult<T> SUCCESS(T result){
         HttpResult<T> httpResult = new HttpResult<>();
         httpResult.setCode(OK_CODE);

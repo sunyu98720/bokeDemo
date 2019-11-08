@@ -2,6 +2,7 @@ package com.example.demo.service.impl;
 
 import com.example.demo.DTO.RegistDTO;
 import com.example.demo.common.HttpResult;
+import com.example.demo.common.Login_RegistCodeMsgEnum;
 import com.example.demo.mapper.StudentMapper;
 import com.example.demo.model.StudentForm;
 import com.example.demo.service.interfaces.RegistService;
@@ -20,10 +21,10 @@ public class RegistServiceImpl implements RegistService {
     @Override
     public HttpResult userRegist(RegistDTO RegistDTO){
         if(RegistDTO.getAccount() == null || RegistDTO.getAccount().equals("") || RegistDTO.getPassword() == null || RegistDTO.getPassword().equals("")){
-            return HttpResult.error("-1005","用户名密码不能为空");
+            return HttpResult.error(Login_RegistCodeMsgEnum.ERROR_NOTNULL.getStatus(), Login_RegistCodeMsgEnum.ERROR_NOTNULL.getMsg());
         }
         if(studentMapper.findByAccount(RegistDTO.getAccount()) != null){
-            return HttpResult.SUCCESS("-1001","该用户已存在");
+            return HttpResult.SUCCESS(Login_RegistCodeMsgEnum.ERROR_EXIST.getStatus(), Login_RegistCodeMsgEnum.ERROR_EXIST.getMsg());
         }else{
             StudentForm studentForm = new StudentForm();
             RegistDTO.setToken(UUID.randomUUID().toString());
@@ -37,22 +38,22 @@ public class RegistServiceImpl implements RegistService {
     @Override
     public HttpResult changeUserInfo(RegistDTO registDTO) {
         if(registDTO.getAccount() == null || registDTO.getAccount().equals("")){
-            return HttpResult.SUCCESS("用户名不能为空");
+            return HttpResult.SUCCESS(Login_RegistCodeMsgEnum.ERROR_USER.getMsg());
         }
         if(registDTO.getPassword() == null || registDTO.getPassword().equals("") || registDTO.getNewPassword() == null || registDTO.getNewPassword().equals("")){
-            return HttpResult.SUCCESS("密码不能为空");
+            return HttpResult.SUCCESS(Login_RegistCodeMsgEnum.ERROR_PWD.getMsg());
         }
         StudentForm studentForm = studentMapper.findByAccount(registDTO.getAccount());
         if(null != studentForm){
             if(registDTO.getAccount().equals(studentForm.getAccount()) && registDTO.getPassword().equals(studentForm.getPassword())){
                 studentMapper.updateByPassword(registDTO.getNewPassword(), registDTO.getAccount());
-                return HttpResult.SUCCESS("修改成功");
+                return HttpResult.SUCCESS(Login_RegistCodeMsgEnum.SUCCESS_CHANGGE_PWD.getMsg());
 
             }else{
-                return HttpResult.error("-1", "密码不正确");
+                return HttpResult.error(Login_RegistCodeMsgEnum.ERROR_ERRORPWD.getStatus(),Login_RegistCodeMsgEnum.ERROR_ERRORPWD.getMsg());
             }
         }else{
-            return HttpResult.error("-2", "用户不存在");
+            return HttpResult.error(Login_RegistCodeMsgEnum.ERROR_NOTUSER.getMsg(),Login_RegistCodeMsgEnum.ERROR_NOTUSER.getMsg());
         }
     }
 }

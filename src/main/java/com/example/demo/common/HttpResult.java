@@ -1,6 +1,9 @@
 package com.example.demo.common;
 
 
+import com.example.demo.common.return_values.ErrorCodeEnum;
+import com.example.demo.common.return_values.Code_Enum;
+
 import java.io.Serializable;
 
 public class HttpResult<T> implements Serializable {
@@ -28,6 +31,14 @@ public class HttpResult<T> implements Serializable {
         httpResult.setResult(result);
         return  httpResult;
     }
+
+    public static <T> HttpResult<T> SUCCESS(Code_Enum codeEnum){
+        HttpResult<T> httpResult = new HttpResult<>();
+        httpResult.setCode(codeEnum.getStatus());
+        httpResult.setMsg(codeEnum.getMessage());
+        return  httpResult;
+    }
+
 
     public static <T>HttpResult<T> SUCCESS(String code,String msg){
         HttpResult<T> httpResult = new HttpResult<>();
@@ -57,6 +68,27 @@ public class HttpResult<T> implements Serializable {
     public static HttpResult error(String code, String message){
         HttpResult result = new HttpResult();
         result.setCode(code);
+        result.setMsg(message);
+        return result;
+    }
+    public static <T> HttpResult<T> error(Code_Enum errorCodeEnum){
+        HttpResult result = new HttpResult();
+        result.setCode(errorCodeEnum.getStatus());
+        result.setMsg(errorCodeEnum.getMessage());
+        return result;
+    }
+
+    /**
+     *@explain
+     *Author 固定code异常处理
+     *@param message
+     *@return com.example.demo.common.HttpResult
+     *@time 2019/12/13 11:18
+     */
+    public static HttpResult error(String message){
+
+        HttpResult result = new HttpResult();
+        result.setCode("-9999");
         result.setMsg(message);
         return result;
     }

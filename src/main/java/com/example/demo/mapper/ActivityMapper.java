@@ -1,13 +1,13 @@
 package com.example.demo.mapper;
 
-        import com.example.demo.model.LoginLog;
-        import com.example.demo.model.SignLog;
-        import org.apache.ibatis.annotations.Insert;
-        import org.apache.ibatis.annotations.Mapper;
-        import org.apache.ibatis.annotations.Param;
-        import org.apache.ibatis.annotations.Select;
+import com.example.demo.model.LoginLog;
+import com.example.demo.model.SignLog;
+import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
-        import java.util.List;
+import java.util.List;
 
 /**
  * Author
@@ -17,7 +17,7 @@ package com.example.demo.mapper;
  * @time
  */
 
-@Mapper
+
 public interface ActivityMapper {
     @Insert("INSERT INTO sign_log (id, accountId, userId, password, name, age, createTime, type) VALUES (#{id}, #{accountId}, #{userId}, #{password}, #{name}, #{age}, #{createTime}, #{type})")
     void createSignLog(SignLog signLog);

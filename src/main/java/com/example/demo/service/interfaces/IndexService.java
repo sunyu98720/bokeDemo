@@ -9,8 +9,12 @@ import javax.servlet.http.HttpServletRequest;
 
 public interface IndexService {
     HttpResult indexShow(IndexDTO indexDTO);
+
     HttpResult sendMsg (SendMsgDTO sendMsgDTO, HttpServletRequest request);
+
     HttpResult msgComment(MsgCommentDTO msgCommentDTO,HttpServletRequest request);
-    HttpResult delMsgComment(Integer publishId,String userId);
+
+    HttpResult delMsgComment(Integer publishId,String userId,HttpServletRequest request);
+
     HttpResult delMsg(Integer id, String userid);
 }

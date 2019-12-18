@@ -1,9 +1,9 @@
-package com.example.demo.common;
+package com.example.demo.common.return_values;
 
-public enum ErrorCodeEnum {
+public enum ErrorCodeEnum implements Code_Enum {
     SUCCESS("200","请求成功"),
     ERROR("-200","请求失败"),
-    SYSTEM_ERROR("-500","系统异常"),
+    SYSTEM_ERROR("-500","系统异常,请稍后重试!"),
     ;
 
     private String status;
@@ -20,6 +20,7 @@ public enum ErrorCodeEnum {
     public String getMessage() {
         return message;
     }
+
 
     public void setMessage(String message) {
         this.message = message;

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Title</title>
+    <script src="http://libs.baidu.com/jquery/1.9.1/jquery.js"></script>
+    <script type="text/javascript" src="https://unpkg.com/vue"></script>
+    <style>
+        img{
+            width: 50px;
+            height: 50px;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <input class="select" type="text">
+    <button id="btn_indexShow">提交</button>
+</div>
+
+<script>
+    new Vue({
+        el:"#app",
+        data:{
+            url_data:"http://localhost:8086",
+            data_after:"",
+        },
+        methods:{
+            indexShow:function () {
+                var that = this;
+                $("#btn_indexShow").click(function () {
+                    alert("aaa")
+                   var indexShowData = {
+                       "page":1,
+                       "size":10,
+                       "content":$(".select").val()
+                   }
+                    $.ajax({
+                        url:that.url_data + "/index/indexShow",
+                        type:"post",
+                        data:JSON.stringify(btn_indexShow),
+                        datatype:"jsonp",
+                        beforeSend:function () {
+                        },
+                        success:function (data) {
+                            alert(data)
+                            that.data_after = data
+                            if(data.code == 200){
+                                console.log(data.result)
+                            }
+                        },
+                        error:function (data) {
+                        }
+                    })
+
+                })
+            }
+        },
+        mounted:function () {
+            this.indexShow();
+        }
+    });
+</script>
+
+
+</body>
+</html>

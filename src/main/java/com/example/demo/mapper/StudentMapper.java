@@ -3,9 +3,11 @@ package com.example.demo.mapper;
 import com.example.demo.model.LoginLog;
 import com.example.demo.model.StudentForm;
 import org.apache.ibatis.annotations.*;
+import org.springframework.stereotype.Service;
+
+import java.sql.Timestamp;
 
 
-@Mapper
 public interface StudentMapper {
     @Select("select * from student_form where account = #{account}")
     StudentForm findByAccount(@Param("account") String account);
@@ -21,4 +23,14 @@ public interface StudentMapper {
 
     @Insert("INSERT INTO login_log (accountId,userId,account, password,name,age,createTime) VALUES (#{accountId},#{userId}, #{account}, #{password}, #{name}, #{age}, #{createTime})")
     void createLoginLog(LoginLog loginLog);
+
+    @Insert(("INSERT INTO loginCheck (token,loginTime) VALUES (#{token},#{loginTime})"))
+    void loginCheck(@Param("token") String token, @Param("loginTime")long loginTime);
+
+    @Delete("Delete from loginCheck where #{nowTime} > loginTime")
+    void deleteLoginStatus(@Param("nowTime")long nowTime);
+
+    @Select("select count(1) from loginCheck where token = #{token}")
+    int selectToken(@Param("token") String token);
+
 }

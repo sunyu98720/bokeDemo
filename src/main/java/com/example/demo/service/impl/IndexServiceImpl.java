@@ -2,7 +2,9 @@ package com.example.demo.service.impl;
 
 import com.example.demo.DTO.*;
 import com.example.demo.common.HttpResult;
+import com.example.demo.common.return_values.indexEnum;
 import com.example.demo.mapper.IndexMapper;
+import com.example.demo.mapper.StudentMapper;
 import com.example.demo.model.MsgComment;
 import com.example.demo.model.Publish;
 import com.example.demo.model.StudentForm;
@@ -24,12 +26,16 @@ public class IndexServiceImpl implements IndexService {
     @Autowired
     private IndexMapper indexMapper;
 
+    @Autowired
+    private StudentMapper studentMapper;
+
     private static final Logger logger = LoggerFactory.getLogger(IndexServiceImpl.class);
 
 
     //    页面分页展示
     @Override
     public HttpResult indexShow(IndexDTO indexDTO) {
+
          Integer totalCount = indexMapper.count(indexDTO.getContent());
          if(totalCount == 0){
              return HttpResult.SUCCESS("1", "暂无数据");
@@ -85,7 +91,8 @@ public class IndexServiceImpl implements IndexService {
 //    写评论
     public HttpResult msgComment(MsgCommentDTO msgCommentDTO,HttpServletRequest request) {
         logger.info("评论内容:" + msgCommentDTO.getComment()  + "," + "评论PublishId:" + msgCommentDTO.getPublishId());
-        StudentForm studentForm = (StudentForm) request.getSession().getAttribute("studentForm");
+//        StudentForm studentForm = (StudentForm) request.getSession().getAttribute("studentForm");
+        StudentForm studentForm = studentMapper.findByToken(msgCommentDTO.getUserId());
         Timestamp ts = new Timestamp(System.currentTimeMillis());
         MsgComment msgComment = new MsgComment();
         msgComment.setComment(msgCommentDTO.getComment());
@@ -98,12 +105,17 @@ public class IndexServiceImpl implements IndexService {
         return HttpResult.SUCCESS("评论成功:" + msgComment);
     }
 
+//    删除评论
     @Override
-    public HttpResult delMsgComment(Integer publishId,String userId) {
+    public HttpResult delMsgComment(Integer publishId,String userId,HttpServletRequest request) {
+        if(indexMapper.findByMsgcomment(publishId) == null){
+            return HttpResult.error(indexEnum.DELMSG_ERROR.getStatus(), indexEnum.DELMSG_ERROR.getMessage());
+        }
         indexMapper.delMsgComment(publishId,userId);
         return HttpResult.SUCCESS("删除成功");
     }
 
+//    删除说说
     @Transactional
     @Override
     public HttpResult delMsg(Integer id, String userid) {

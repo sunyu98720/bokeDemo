@@ -2,11 +2,12 @@ package com.example.demo.model;
 
 import lombok.Data;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.logging.SimpleFormatter;
 
 @Data
-public class Publish {
+public class Publish implements Serializable {
     private Integer id;
     private String name;
     private String userid;

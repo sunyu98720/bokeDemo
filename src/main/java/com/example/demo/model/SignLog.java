@@ -2,6 +2,7 @@ package com.example.demo.model;
 
 import lombok.Data;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 
 /**
@@ -12,7 +13,7 @@ import java.sql.Timestamp;
  * @time
  */
 @Data
-public class SignLog {
+public class SignLog implements Serializable {
     private int id;
     private int accountId;
     private String userId;

@@ -1,26 +1,20 @@
 package com.example.demo.common;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-import com.example.demo.DTO.LoginDTO;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.catalina.connector.ResponseFacade;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import javax.servlet.ServletInputStream;
-import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.util.Arrays;
 
 /**
@@ -35,6 +29,7 @@ import java.util.Arrays;
 @Slf4j
 @Order(1)
 public class AopTest {
+
 
 
     @Pointcut("execution(public * com.example.demo.controller.*.*(..)) && @annotation(com.example.demo.common.annotation.MyAnnotation)")

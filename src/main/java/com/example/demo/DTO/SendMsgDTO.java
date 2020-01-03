@@ -2,9 +2,7 @@ package com.example.demo.DTO;
 
 import lombok.Data;
 
-import javax.swing.border.TitledBorder;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 @Data

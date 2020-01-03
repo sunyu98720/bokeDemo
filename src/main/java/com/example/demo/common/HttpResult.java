@@ -79,8 +79,8 @@ public class HttpResult<T> implements Serializable {
     }
 
     /**
-     *@explain
-     *Author 固定code异常处理
+     *@explain固定code异常处理
+     *Author
      *@param message
      *@return com.example.demo.common.HttpResult
      *@time 2019/12/13 11:18

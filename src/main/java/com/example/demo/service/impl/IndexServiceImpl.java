@@ -3,11 +3,10 @@ package com.example.demo.service.impl;
 import com.example.demo.DTO.*;
 import com.example.demo.common.HttpResult;
 import com.example.demo.common.return_values.indexEnum;
-import com.example.demo.mapper.IndexMapper;
-import com.example.demo.mapper.StudentMapper;
-import com.example.demo.model.MsgComment;
-import com.example.demo.model.Publish;
-import com.example.demo.model.StudentForm;
+import com.example.demo.mapper.MsgCommentMapper;
+import com.example.demo.mapper.PublishMapper;
+import com.example.demo.mapper.StudentFormMapper;
+import com.example.demo.model.*;
 import com.example.demo.service.interfaces.IndexService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,11 +22,15 @@ import java.util.List;
 
 @Service
 public class IndexServiceImpl implements IndexService {
-    @Autowired
-    private IndexMapper indexMapper;
 
     @Autowired
-    private StudentMapper studentMapper;
+    private PublishMapper publishMapper;
+
+    @Autowired
+    private StudentFormMapper studentFormMapper;
+
+    @Autowired
+    private MsgCommentMapper msgCommentMapper;
 
     private static final Logger logger = LoggerFactory.getLogger(IndexServiceImpl.class);
 
@@ -35,14 +38,16 @@ public class IndexServiceImpl implements IndexService {
     //    页面分页展示
     @Override
     public HttpResult indexShow(IndexDTO indexDTO) {
-
-         Integer totalCount = indexMapper.count(indexDTO.getContent());
+         PublishExample publishExample = new PublishExample();
+         publishExample.createCriteria()
+                 .andContentLike(indexDTO.getContent());
+         Integer totalCount = publishMapper.countByExample(publishExample);
          if(totalCount == 0){
              return HttpResult.SUCCESS("1", "暂无数据");
          }
          indexDTO.setPage(indexDTO.getPage()-1);
          indexDTO.setIndex(indexDTO.getSize() * indexDTO.getPage());
-        List<Publish> publishList = indexMapper.selectAllPublish(indexDTO.getIndex(), indexDTO.getSize(), indexDTO.getContent());
+         List<Publish> publishList = publishMapper.selectAllPublish(indexDTO.getIndex(), indexDTO.getSize(), indexDTO.getContent());
         if(publishList == null || publishList.isEmpty()){
             return HttpResult.SUCCESS("1", "暂无数据");
         }
@@ -54,7 +59,10 @@ public class IndexServiceImpl implements IndexService {
         List<PublishDTO> publishDTOS = new ArrayList<>();
         for(Publish publish : publishList){
             PublishDTO publishDTO = new PublishDTO();
-            List<MsgComment> msgComment = indexMapper.findByMsgcomment(publish.getId());
+            MsgCommentExample msgCommentExample = new MsgCommentExample();
+            msgCommentExample.createCriteria()
+                    .andPublishidEqualTo(publish.getId());
+            List<MsgComment> msgComment = msgCommentMapper.selectByExample(msgCommentExample);
             publishDTO.setMsgComments(msgComment);
             BeanUtils.copyProperties(publish, publishDTO);
             publishDTOS.add(publishDTO);
@@ -76,12 +84,12 @@ public class IndexServiceImpl implements IndexService {
         Publish publish = new Publish();
         publish.setContent(sendMsgDTO.getContent());
         publish.setTitle(sendMsgDTO.getTitle());
-        publish.setPublishUrl(sendMsgDTO.getPhotoUrl());
-        publish.setCreateTime(ts);
+        publish.setPublishurl(sendMsgDTO.getPhotoUrl());
+        publish.setCreatetime(ts);
         publish.setName(studentForm.getName());
         publish.setUserid(studentForm.getToken());
-        publish.setUpdataTime(ts);
-        indexMapper.createPublish(publish);
+        publish.setUpdatatime(ts);
+        publishMapper.insert(publish);
         logger.info("发送成功:" + publish);
         return HttpResult.SUCCESS("发送成功");
     }
@@ -91,16 +99,18 @@ public class IndexServiceImpl implements IndexService {
 //    写评论
     public HttpResult msgComment(MsgCommentDTO msgCommentDTO,HttpServletRequest request) {
         logger.info("评论内容:" + msgCommentDTO.getComment()  + "," + "评论PublishId:" + msgCommentDTO.getPublishId());
-//        StudentForm studentForm = (StudentForm) request.getSession().getAttribute("studentForm");
-        StudentForm studentForm = studentMapper.findByToken(msgCommentDTO.getUserId());
+        StudentFormExample studentFormExample = new StudentFormExample();
+        studentFormExample.createCriteria()
+                .andTokenEqualTo(msgCommentDTO.getUserId());
+        StudentForm studentForm = (StudentForm) studentFormMapper.selectByExample(studentFormExample);
         Timestamp ts = new Timestamp(System.currentTimeMillis());
         MsgComment msgComment = new MsgComment();
         msgComment.setComment(msgCommentDTO.getComment());
-        msgComment.setCreateTime(ts);
-        msgComment.setPublishId(msgCommentDTO.getPublishId());
+        msgComment.setCreatetime(ts);
+        msgComment.setPublishid(msgCommentDTO.getPublishId());
         msgComment.setName(studentForm.getName());
-        msgComment.setUserId(studentForm.getToken());
-        indexMapper.createComment(msgComment);
+        msgComment.setUserid(studentForm.getToken());
+        msgCommentMapper.insert(msgComment);
         logger.info("评论成功:" + msgComment);
         return HttpResult.SUCCESS("评论成功:" + msgComment);
     }
@@ -108,20 +118,32 @@ public class IndexServiceImpl implements IndexService {
 //    删除评论
     @Override
     public HttpResult delMsgComment(Integer publishId,String userId,HttpServletRequest request) {
-        if(indexMapper.findByMsgcomment(publishId) == null){
+        MsgCommentExample msgCommentExample = new MsgCommentExample();
+        msgCommentExample.createCriteria()
+                .andPublishidEqualTo(publishId);
+        if(msgCommentMapper.selectByExample(msgCommentExample) == null){
             return HttpResult.error(indexEnum.DELMSG_ERROR.getStatus(), indexEnum.DELMSG_ERROR.getMessage());
         }
-        indexMapper.delMsgComment(publishId,userId);
+        MsgCommentExample commentExample = new MsgCommentExample();
+        commentExample.createCriteria()
+                .andPublishidEqualTo(publishId)
+                .andUseridEqualTo(userId);
+        msgCommentMapper.deleteByExample(msgCommentExample);
         return HttpResult.SUCCESS("删除成功");
+
     }
 
 //    删除说说
-    @Transactional
+    @Transactional  //开启事务管理
     @Override
     public HttpResult delMsg(Integer id, String userid) {
         try {
-            indexMapper.delMsg(id);
-            indexMapper.delMsgComment(id,userid);
+            publishMapper.deleteByPrimaryKey(id);
+            MsgCommentExample msgCommentExample = new MsgCommentExample();
+            msgCommentExample.createCriteria()
+                    .andIdEqualTo(id)
+                    .andUseridEqualTo(userid);
+            msgCommentMapper.deleteByExample(msgCommentExample);
             logger.info("评论删除成功," + "评论id:" + id + ",userid:" + userid);
         }catch (Exception e){
             e.printStackTrace();

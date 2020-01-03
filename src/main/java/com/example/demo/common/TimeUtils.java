@@ -1,5 +1,8 @@
 package com.example.demo.common;
 
+import sun.rmi.runtime.Log;
+
+import javax.xml.crypto.Data;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -59,5 +62,13 @@ public class TimeUtils {
             long zero = current-(current+ TimeZone.getDefault().getRawOffset())%(1000*3600*24);
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
             return simpleDateFormat.format(new Date(zero));
+    }
+
+    public Date intiDateInt(){
+        Date date = new Date();
+        long current = System.currentTimeMillis();
+        long zero = current-(current+ TimeZone.getDefault().getRawOffset())%(1000*3600*24);
+        date.setTime(zero);
+        return date;
     }
 }

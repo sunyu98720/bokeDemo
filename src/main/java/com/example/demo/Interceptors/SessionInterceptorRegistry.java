@@ -2,8 +2,10 @@ package com.example.demo.Interceptors;
 
 import com.alibaba.fastjson.JSONObject;
 import com.example.demo.common.return_values.Login_RegistCodeMsgEnum;
-import com.example.demo.mapper.StudentMapper;
+import com.example.demo.mapper.LoginCheckMapper;
+import com.example.demo.model.LoginCheckExample;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
@@ -12,10 +14,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
 
-@Service
+@Component
 public class SessionInterceptorRegistry implements HandlerInterceptor {
+
     @Autowired
-    private StudentMapper studentMapper;
+     LoginCheckMapper loginCheckMapper;
 
     @Override
     public boolean preHandle( HttpServletRequest request, HttpServletResponse response, Object o)
@@ -23,9 +26,10 @@ public class SessionInterceptorRegistry implements HandlerInterceptor {
 
 
 //      登录预处理,检测登录
-
-
-        if(studentMapper.selectToken(request.getParameter("token")) <= 0){
+        LoginCheckExample loginCheckExample = new LoginCheckExample();
+        loginCheckExample.createCriteria()
+                .andTokenEqualTo(request.getParameter("token"));
+        if(loginCheckMapper.countByExample(loginCheckExample) <= 0){
             response.reset();
             response.setCharacterEncoding("UTF-8");
             response.setContentType("application/json;charset=UTF-8");
@@ -39,16 +43,6 @@ public class SessionInterceptorRegistry implements HandlerInterceptor {
         }else{
             return true;
         }
-
-//        String userToken = request.getParameter("token");
-//        if(token != null && token.equals(userToken)){
-//            return true;
-//        }
-//        StudentForm studentForm = (StudentForm) request.getSession().getAttribute("studentForm");
-//        if(studentForm != null){
-//            return true;
-//        }
-
     }
 
     @Override

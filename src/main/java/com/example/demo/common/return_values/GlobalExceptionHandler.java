@@ -20,8 +20,8 @@ import javax.validation.ConstraintViolationException;
 @Log4j
 public class GlobalExceptionHandler {
     /**
-    *@explain
-    *Author 参数校验异常捕获
+    *@explain 参数校验异常捕获
+    *Author
     *@param null
     *@return
     *@time 2019/12/18 11:46
@@ -33,8 +33,8 @@ public class GlobalExceptionHandler {
     }
 
     /**
-    *@explain
-    *Author 参数校验异常捕获
+    *@explain 参数校验异常捕获
+    *Author
     *@param null
     *@return
     *@time 2019/12/18 11:46
@@ -54,8 +54,8 @@ public class GlobalExceptionHandler {
         return HttpResult.error(ErrorCodeEnum.SYSTEM_ERROR);
     }
     /**
-    *@explain
-    *Author 捕获空指针异常
+    *@explain 捕获空指针异常
+    *Author
     *@param null
     *@return
     *@time 2019/12/18 11:45
